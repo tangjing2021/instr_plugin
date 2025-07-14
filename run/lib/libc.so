@@ -1,0 +1,4 @@
+/* GNU ld script
+   Use the shared library, but some functions are only in
+   the static library, so try that secondarily.  */
+GROUP ( /nix/store/l9gci75mw4f1ry414firr04l691xxmp0-glibc-riscv64-unknown-linux-gnu-2.40-36/lib/libc.so.6 /nix/store/l9gci75mw4f1ry414firr04l691xxmp0-glibc-riscv64-unknown-linux-gnu-2.40-36/lib/libc_nonshared.a  AS_NEEDED ( /nix/store/l9gci75mw4f1ry414firr04l691xxmp0-glibc-riscv64-unknown-linux-gnu-2.40-36/lib/ld-linux-riscv64-lp64d.so.1 ) )
