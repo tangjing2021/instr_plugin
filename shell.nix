@@ -1,6 +1,7 @@
 { pkgs ? import <nixpkgs> {} }:
 
 let
+  instrSource = "";
   # 从 GitHub 拉取插件源码
   # instrSource = pkgs.fetchFromGitHub {
   #   owner = "tangjing2021";
