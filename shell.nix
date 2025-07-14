@@ -1,22 +1,26 @@
 { pkgs ? import <nixpkgs> {} }:
 
 let
-  instrSource = "";
   # 从 GitHub 拉取插件源码
-  # instrSource = pkgs.fetchFromGitHub {
-  #   owner = "tangjing2021";
-  #   repo = "instr_source";
-  #   rev = "main";
-  #   sha256 = "sha256-mvBlLbalPYy/MO+DUNTG/j3Vn8rP3MtH2o04xHGVu9E==";
-  # };
+  instrSource = pkgs.fetchFromGitHub {
+    owner = "tangjing2021";
+    repo = "instr_source";
+    rev = "main";
+    # 可以先填一个假的 sha256，nix-shell 会提示真实 hash
+    sha256 = "sha256-mvBlLbalPYy/MO+DUNTG/j3Vn8rP3MtH2o04xHGVu9E==";
+  };
 
   # 使用支持插件 API v4 的 QEMU
-  qemuWithPluginSupport = pkgs.qemu.overrideAttrs (old: {
+qemuWithPluginSupport = pkgs.qemu.overrideAttrs (old: {
     configureFlags = (old.configureFlags or []) ++ [
       "--target-list=riscv64-linux-user"
       "--enable-plugins"
       "--enable-linux-user"
     ];
+      postInstall = (old.postInstall or "") + ''
+    # 移除无效的 qemu-kvm 符号链接
+    rm -f $out/bin/qemu-kvm
+  '';
   });
 
   # Capstone: 启用 RISC-V B 扩展，仅构建 riscv 支持
@@ -145,7 +149,7 @@ pkgs.mkShell {
 
     # 插件构建脚本
     buildPlugin
-
+    
     #运行命令
     runTest
 
@@ -179,6 +183,6 @@ pkgs.mkShell {
     echo ""
     echo "要编译插件，请运行: build-plugin"
     echo "然后使用以下命令运行程序:"
-    echo "运行命令：runTest"
+    echo "  qemu-riscv64 -plugin ./parsec_ins_plugin.so /path/to/program"
   '';
 }
